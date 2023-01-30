@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Index</title>
+</head>
+<body>
+	<p id="p1">s</p>
+    <p>Go to <a href="Person">Person</a></p>
+</body>
+</html>
+
+<script type="text/javascript">
+		let dt = new Date();
+		let yyyy = dt.getFullYear();
+		let MM = dt.getMonth()+1;
+		let dd = dt.getDate();
+		let hh = dt.getHours();
+		let mi = dt.getMinutes();
+		let ss = dt.getSeconds();
+		if(MM.toString().length == 1){
+			MM = '0'+MM;
+		}
+		if(dd.toString().length == 1){
+			dd = '0'+dd;
+		}
+		if(hh.toString().length == 1){
+			hh = '0'+hh;
+		}
+		if(mi.toString().length == 1){
+			mi = '0'+mi;
+		}
+		if(ss.toString().length == 1){
+			ss = '0'+ss;
+		}
+		const dat = document.getElementById('p1');
+		dat.textContent = yyyy +'-'+ MM +'-'+ dd +' '+ hh +':'+ mi +':'+ ss;
+</script>

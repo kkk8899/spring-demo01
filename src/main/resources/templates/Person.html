@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+		<title>Person</title>
+		<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/575/575927.png" type="png">
+	</head>
+	<body>
+		<h1>Hello SpringBoot!! </h1>
+		<p th:text="'Hello, ' + ${name} + '!'"></p>
+		<br/>
+		<button onclick="createPerson()" value="">新增</button>
+		<!-- <button value="新增" onclick="/*[[@{/Form}]]*/"></button> -->
+		<button onclick="updatehis()">刷新</button>
+		<table align="center" rules="all" cellpadding="5px" style="border-collapse:collapse; border:1px solid;">
+			<tr>
+	            <td>流水號</td>
+	            <td>姓名</td>
+	            <td>暱稱</td>
+	            <td>性別</td>
+	            <td>生日</td>
+	            <td>備註</td>
+	            <td>建立日期</td>
+	            <td>操作</td>
+        	</tr>
+
+        	<tr th:each="status:${list.data}">
+	            <td th:text="${status.id}"></td>
+	            <td th:text="${status.name==null? 		 '------':status.name}"></td>
+	            <td th:text="${status.nickname==null? 	 '------':status.nickname}"></td>
+	            <td th:text="${status.sex==null? 		 '------':status.sex}"></td>
+	            <td th:text="${status.birthday==null? 	 '------':status.birthday}"></td>
+	            <td th:text="${status.description==null? '------':status.description}"></td>
+	            <td th:text="${status.create_time}"></td>
+				<td>
+					<input type="button" th:onclick="updatePerson([[${status.id}]])" value="修改"/>
+					<input type="button" th:onclick="test([[${status.id}]])" value="刪除"/>
+				</td>
+        	</tr>
+        </table>
+ 
+	</body>
+</html>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script th:inline="javascript">
+
+    var message = /*[[${list}]]*/ 'default';
+    console.log(message);
+    
+    async function updatehis(){
+    	await window.history.go(0);
+    	await alert('刷新成功');
+    };
+
+    async function test(i){
+    	console.log(i);
+    };
+    
+    function createPerson(){
+    	location.href="addForm?action=add";
+    }
+    
+    function updatePerson(i){
+    	console.log(i);
+    	var pa = {"qid":i};
+    	$.ajax({
+            async:true,
+            type: "GET",
+            data: pa,
+             url: "updateForm",
+            success: function(data){
+            	console.log(data);
+            	alert('操作成功!');
+            	location.href = "editForm?action=edit&id="+pa.qid;
+            }, 
+            error: function(e){
+            	alert('Error'+e);
+            }
+     })
+    };
+    
+</script>
