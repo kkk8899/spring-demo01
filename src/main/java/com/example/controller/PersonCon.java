@@ -26,6 +26,7 @@ public class PersonCon {
 	PersonSer personSer;
 
 	@GetMapping("/Person")
+	/* 列出資料 */
 	public Object getPerson(Model model) {
 		// 取得基本資料
 		Map<String, Object> rs=new HashMap<String, Object>();
@@ -37,6 +38,7 @@ public class PersonCon {
 	}
 
 	@GetMapping("/addForm")
+	/* 新增資料頁面 */
 	public Object form(Model model) {
 		personModel = new PersonModel();
 		model.addAttribute("person", personModel);
@@ -44,6 +46,7 @@ public class PersonCon {
 	}
 
 	@PostMapping("/addPerson")
+	/* 新增資料API */
 	public Object addPerson(
 			@RequestParam(value = "name", defaultValue = "") String name,
 			@RequestParam(value = "nickname", defaultValue = "") String nickname,
@@ -63,6 +66,7 @@ public class PersonCon {
 	}
 
 	@GetMapping("/updateForm")
+	/* 修改資料取得ID */
 	public Object updateForm(
 			@RequestParam(value = "qid", defaultValue = "") String id,
 			Model model) {
@@ -80,6 +84,7 @@ public class PersonCon {
 	}
 	
 	@GetMapping("/editForm")
+	/* 修改資料頁面 */
 	public Object editForm(Model model) {
 		try {
 			model.addAttribute("person", personModel);
@@ -91,6 +96,7 @@ public class PersonCon {
 	}
 
 	@PostMapping("/editPerson")
+	/* 修改資料Api */
 	public Object editPerson(
 			@RequestParam(value = "id", defaultValue = "") String id,
 			@RequestParam(value = "name", defaultValue = "") String name,
