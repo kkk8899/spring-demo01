@@ -29,6 +29,7 @@ public class PersonSer {
 
 	private PrintStream ps = new PrintStream(System.out);
 
+	/* 取得Person全部資料 */
 	public Map<String, Object> getAllPerson() {
 		// TODO Auto-generated method stub
 		System.out.println("getAllPerson開始 "+new Date().toLocaleString());
@@ -66,6 +67,7 @@ public class PersonSer {
 		return rs;
 	}
 
+	/* 取得單獨資料 */
 	public Map<String, Object> getOnePerson(String id) {
 		// TODO Auto-generated method stub
 		System.out.println("getPerson開始 "+new Date().toLocaleString());
@@ -83,26 +85,45 @@ public class PersonSer {
 		return rs;
 	}
 
+	/* 新增資料 */
 	public void addPerson(String name, String nickname, String sex, String birthday, String description) throws Exception{
 		Date date = new Date();
-		List<Map<String, Object>> ii = jdbcTemplate.queryForList("select max(id)+1 as id from tb_person");
-		Object iid = ii.get(0).get("id");
+		ps.println("addPerson開始 "+date.toLocaleString());
+
+//		List<Map<String, Object>> ii = jdbcTemplate.queryForList("SELECT MAX(id)+1 as id FROM tb_person");
+//
+//		String id = ii.get(0).get("id").toString();
+//		ps.println(ii.get(0).get("id"));
 		String sql = "INSERT INTO tb_person ("
-				+ "name, nickname, sex, birthday, description, create_time)"
-				+ "values(?, ?, ?, ?, ?, ?)";
-		Object[] params = new Object[] {name, nickname, sex, birthday, description, date};
+					+ "name, nickname, sex, birthday, description, create_time)"
+					+ "values(?, ?, ?, ?, ?, ?)";
+		Object[] params = new Object[] {name, nickname, sex, birthday, description, date.toLocaleString()};
+
 		try {
+//			personModel.setId(id);
+			ps.println(sql);
+			for (int i = 0; i < params.length; i++) {
+				ps.print(params[i]+", ");
+			}
 			jdbcTemplate.update(sql, params);
-			ps.println(sql+params);
-			personModel.setId(iid.toString());
-			selPerson();
+
+			personModel.setName(name);
+			personModel.setNickname(nickname);
+			personModel.setSex(sex);
+			personModel.setBirthday(birthday);
+			personModel.setDescription(description);
+			personModel.setCreate_time(date.toLocaleString());
+
+			System.out.println("\n"+name+" "+nickname+" "+sex+" "+birthday+" "+description);
+			System.out.println("addPerson結束 "+date.toLocaleString());
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println(e.getMessage());
 			e.printStackTrace();
+			ps.println(e.getMessage());
 		}
 	}
 
+	/* 取得資料 並將資料新增至PersonModel */
 	public List<Map<String, Object>> selPerson() {
 		// TODO Auto-generated method stub
 		System.out.println("selPerson開始 "+new Date().toLocaleString());
@@ -110,7 +131,7 @@ public class PersonSer {
 		Object[] params = new Object[]{personModel.getId()};
 
 		List<Map<String, Object>> rs=new ArrayList<Map<String, Object>>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM tb_person WHERE ID = ?");
+		StringBuilder sql = new StringBuilder("SELECT id, name, nickname, sex, birthday, description, create_time FROM tb_person WHERE ID = ?");
 		if (params != null) {
 			ps.println(sql+":"+params[0].toString());
 		}else {
@@ -121,44 +142,52 @@ public class PersonSer {
 		for (Map<String, Object> i : rs) {
 			for (Map.Entry<String, Object> j : i.entrySet()) {
 				System.out.printf("rs Key->%s, Value->%S ", j.getKey(), j.getValue());
-				switch (j.getKey()) {
+
+				switch (j.getKey().toString()) {
 				case "id":
+					ps.println("1");
 					if (j.getValue()==null) {
 						break;
 					}
 					personModel.setId(j.getValue().toString());
 					break;
 				case "name":
+					ps.println("2");
 					if (j.getValue()==null) {
 						break;
 					}
 					personModel.setName(j.getValue().toString());
 					break;
 				case "nickname":
+					ps.println("3");
 					if (j.getValue()==null) {
 						break;
 					}
 					personModel.setNickname(j.getValue().toString());
 					break;
 				case "sex":
+					ps.println("4");
 					if (j.getValue()==null) {
 						break;
 					}
 					personModel.setSex(j.getValue().toString());
 					break;
 				case "birthday":
+					ps.println("5");
 					if (j.getValue()==null) {
 						break;
 					}
 					personModel.setBirthday(j.getValue().toString());
 					break;
 				case "description":
+					ps.println("6");
 					if (j.getValue()==null) {
 						break;
 					}
 					personModel.setDescription(j.getValue().toString());
 					break;
 				case "create_time":
+					ps.println("7");
 					if (j.getValue()==null) {
 						break;
 					}
@@ -169,16 +198,19 @@ public class PersonSer {
 				}
 			}
 		}
-		
+		System.out.println();
 		System.out.println(rs);
 		System.out.println("selPerson結束 "+new Date().toLocaleString());
 
 		return rs;
 	}
 
+	/* 修改資料 */
 	public void editPerson(String id, String name, String nickname, String sex, String birthday, String description) throws Exception{
 		Date date = new Date();
 		String iid = personModel.getId();
+		ps.println("editPerson開始 "+date.toString());
+
 		String sql = "UPDATE tb_person SET "
 				+ "name = ?, nickname = ?, sex = ?, birthday = ?, description = ?, create_time = ? "
 				+ "WHERE id = " + id;
@@ -188,6 +220,24 @@ public class PersonSer {
 			jdbcTemplate.update(sql, params);
 			ps.println(sql+params);
 			selPerson();
+			ps.println("editPerson結束 "+date.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+			ps.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	/* 刪除資料 */
+	public void delPerson(String id) throws Exception{
+		String iid = personModel.getId();
+
+		ps.println("delPerson開始 "+new Date().toString());
+		String sql = "DELETE FROM tb_person WHERE id = " + id;
+		try {
+			jdbcTemplate.update(sql);
+			ps.println(sql);
+			ps.println("delPerson結束 "+new Date().toString());
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());

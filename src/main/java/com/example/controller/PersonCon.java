@@ -1,17 +1,19 @@
 package com.example.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.model.PersonModel;
 import com.example.service.PersonSer;
@@ -26,8 +28,8 @@ public class PersonCon {
 	PersonSer personSer;
 
 	@GetMapping("/Person")
-	/* 列出資料 */
-	public Object getPerson(Model model) {
+	/* 列出資料Api */
+	public Object getPerson(ModelMap model) {
 		// 取得基本資料
 		Map<String, Object> rs=new HashMap<String, Object>();
 		rs = personSer.getAllPerson();
@@ -39,37 +41,47 @@ public class PersonCon {
 
 	@GetMapping("/addForm")
 	/* 新增資料頁面 */
-	public Object form(Model model) {
-		personModel = new PersonModel();
-		model.addAttribute("person", personModel);
-		return "addForm";
+	public Object addForm(ModelMap model) {
+		//personModel = new PersonModel()
+		/* 另一種方式 */
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("addForm");
+		mv.addObject("person", personModel);
+		//model.addAttribute("person", personModel);
+		return mv;
 	}
 
 	@PostMapping("/addPerson")
-	/* 新增資料API */
+	/* 新增資料儲存Api */
 	public Object addPerson(
 			@RequestParam(value = "name", defaultValue = "") String name,
 			@RequestParam(value = "nickname", defaultValue = "") String nickname,
 			@RequestParam(value = "sex", defaultValue = "") String sex,
 			@RequestParam(value = "birthday", defaultValue = "") String birthday,
 			@RequestParam(value = "description", defaultValue = "") String description,
-			Model model) {
+			ModelMap model) {
 		try {
 			System.out.println(name+" "+nickname+" "+sex+" "+birthday+" "+description);
 			personSer.addPerson(name, nickname, sex, birthday, description);
+
 			model.addAttribute("person", personModel);
+//			personSer.selPerson();
+			System.out.println(personModel.getId()+" "+personModel.getName()+" "
+							+personModel.getNickname()+" "+personModel.getSex()+" "
+							+personModel.getBirthday()+" "+personModel.getDescription()+" "+personModel.getCreate_time());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		return "addPerson";
 	}
 
 	@GetMapping("/updateForm")
-	/* 修改資料取得ID */
+	/* 修改資料 取得ID */
 	public Object updateForm(
 			@RequestParam(value = "qid", defaultValue = "") String id,
-			Model model) {
+			ModelMap model) {
 		try {
 //			System.out.println(id);
 			personModel.setId(id);
@@ -85,7 +97,7 @@ public class PersonCon {
 	
 	@GetMapping("/editForm")
 	/* 修改資料頁面 */
-	public Object editForm(Model model) {
+	public Object editForm(ModelMap model) {
 		try {
 			model.addAttribute("person", personModel);
 		} catch (Exception e) {
@@ -96,7 +108,7 @@ public class PersonCon {
 	}
 
 	@PostMapping("/editPerson")
-	/* 修改資料Api */
+	/* 修改資料儲存Api */
 	public Object editPerson(
 			@RequestParam(value = "id", defaultValue = "") String id,
 			@RequestParam(value = "name", defaultValue = "") String name,
@@ -104,7 +116,7 @@ public class PersonCon {
 			@RequestParam(value = "sex", defaultValue = "") String sex,
 			@RequestParam(value = "birthday", defaultValue = "") String birthday,
 			@RequestParam(value = "description", defaultValue = "") String description,
-			Model model) {
+			ModelMap model) {
 		try {
 			System.out.println(name+" "+nickname+" "+sex+" "+birthday+" "+description);
 			personSer.editPerson(id, name, nickname, sex, birthday, description);
@@ -112,8 +124,26 @@ public class PersonCon {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return e.getMessage();
 		}
-		return "addPerson";
+		return "editPerson";
+	}
+
+	@PostMapping("/delPerson")
+	/* 刪除資料Api */
+	public Object delPerson(
+			@RequestParam(value = "qid", defaultValue = "")String id,
+			ModelMap model) {
+		try {
+			System.out.println(new Date()+"刪除資料:"+id);
+			personSer.delPerson(id);
+			model.addAttribute("list", personSer.getAllPerson());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return e.getMessage();
+		}
+		return "Person";
 	}
 
 }

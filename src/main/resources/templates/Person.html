@@ -10,7 +10,7 @@
 		<p th:text="'Hello, ' + ${name} + '!'"></p>
 		<br/>
 		<button onclick="createPerson()" value="">新增</button>
-		<!-- <button value="新增" onclick="/*[[@{/Form}]]*/"></button> -->
+		<!-- <button><a th:href="@{/addForm}">新增</a></button> -->
 		<button onclick="updatehis()">刷新</button>
 		<table align="center" rules="all" cellpadding="5px" style="border-collapse:collapse; border:1px solid;">
 			<tr>
@@ -26,15 +26,15 @@
 
         	<tr th:each="status:${list.data}">
 	            <td th:text="${status.id}"></td>
-	            <td th:text="${status.name==null? 		 '------':status.name}"></td>
-	            <td th:text="${status.nickname==null? 	 '------':status.nickname}"></td>
-	            <td th:text="${status.sex==null? 		 '------':status.sex}"></td>
-	            <td th:text="${status.birthday==null? 	 '------':status.birthday}"></td>
-	            <td th:text="${status.description==null? '------':status.description}"></td>
+	            <td th:text="${status.name==null or status.name==''? 	 			'------':status.name}"></td>
+	            <td th:text="${status.nickname==null or status.nickname==''? 		'------':status.nickname}"></td>
+	            <td th:text="${status.sex==null or status.sex==''? 		 			'------':status.sex}"></td>
+	            <td th:text="${status.birthday==null or status.birthday==''?		'------':status.birthday}"></td>
+	            <td th:text="${status.description==null or status.description==''?	'------':status.description}"></td>
 	            <td th:text="${status.create_time}"></td>
 				<td>
 					<input type="button" th:onclick="updatePerson([[${status.id}]])" value="修改"/>
-					<input type="button" th:onclick="test([[${status.id}]])" value="刪除"/>
+					<input type="button" th:onclick="delPerson([[${status.id}]])" value="刪除"/>
 				</td>
         	</tr>
         </table>
@@ -42,7 +42,7 @@
 	</body>
 </html>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script th:inline="javascript">
 
     var message = /*[[${list}]]*/ 'default';
@@ -58,9 +58,10 @@
     };
     
     function createPerson(){
-    	location.href="addForm?action=add";
+    	//window.location.href="addForm";
+    	location.href=/*[[@{/addForm}]]*/ 'default';
     }
-    
+
     function updatePerson(i){
     	console.log(i);
     	var pa = {"qid":i};
@@ -69,15 +70,33 @@
             type: "GET",
             data: pa,
              url: "updateForm",
-            success: function(data){
-            	console.log(data);
-            	alert('操作成功!');
-            	location.href = "editForm?action=edit&id="+pa.qid;
+            success: function(res){
+            	if (confirm('操作成功!') == true){
+            		location.href = "editForm?action=edit&id="+pa.qid;
+            	}
             }, 
             error: function(e){
             	alert('Error'+e);
             }
      })
     };
-    
+
+    function delPerson(i){
+    	console.log(i);
+    	var pa = {"qid":i};
+    	$.ajax({
+            async:true,
+            type: "POST",
+            data: pa,
+             url: "delPerson",
+            success: function(res){
+            	alert('刪除成功!');
+            	history.go(0);
+            }, 
+            error: function(e){
+            	alert('Error'+e);
+            }
+     })
+    };
+
 </script>

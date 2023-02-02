@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8">
-		<title>addPerson</title>
+		<title>editPerson</title>
 		<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/575/575927.png" type="png">
 	</head>
 	<body>
@@ -11,6 +11,10 @@
 				<fieldset style="width:280px;">
 					<legend align="center">人員資料</legend>
 					<table align=center>
+						<tr>
+							<td>ID：</td>
+							<td th:text="${person.id}"></td>
+						</tr>
 						<tr>
 							<td>姓名：</td>
 							<td th:text="${person.name}"></td>
@@ -44,7 +48,7 @@
 						<tr>
 							<td></td>
 							<td>
-								<input type="button" value=" 回上一頁 " onclick="goPerson()" />
+								<input type="button" value=" 回上一頁 " onclick="history.go(-1); " />
 							</td>
 						</tr>
 					</table>
@@ -55,9 +59,5 @@
 </html>
 
 <script>
-
-    function goPerson(){
-    	window.location.href = "Person";
-    };
 
 </script>
