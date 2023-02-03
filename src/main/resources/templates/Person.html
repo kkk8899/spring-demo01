@@ -59,7 +59,7 @@
     
     function createPerson(){
     	//window.location.href="addForm";
-    	location.href=/*[[@{/addForm}]]*/ 'default';
+    	location.href=/*[[@{/SpringDemo/addForm}]]*/ 'default';
     }
 
     function updatePerson(i){
@@ -73,6 +73,8 @@
             success: function(res){
             	if (confirm('操作成功!') == true){
             		location.href = "editForm?action=edit&id="+pa.qid;
+            	} else {
+            		window.history.go(0);
             	}
             }, 
             error: function(e){

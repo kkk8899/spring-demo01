@@ -1,16 +1,12 @@
 package com.example.service;
 
 import java.io.PrintStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.example.model.PersonModel;
 
 @Service
-public class PersonSer {
+public class PersonService {
 
 	@Autowired
 	private PersonModel personModel;
@@ -87,20 +83,17 @@ public class PersonSer {
 
 	/* 新增資料 */
 	public void addPerson(String name, String nickname, String sex, String birthday, String description) throws Exception{
-		Date date = new Date();
-		ps.println("addPerson開始 "+date.toLocaleString());
+		Date Now = new Date();
+	    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String date = sd.format(Now);
+		ps.println("addPerson開始 "+date);
 
-//		List<Map<String, Object>> ii = jdbcTemplate.queryForList("SELECT MAX(id)+1 as id FROM tb_person");
-//
-//		String id = ii.get(0).get("id").toString();
-//		ps.println(ii.get(0).get("id"));
 		String sql = "INSERT INTO tb_person ("
 					+ "name, nickname, sex, birthday, description, create_time)"
 					+ "values(?, ?, ?, ?, ?, ?)";
-		Object[] params = new Object[] {name, nickname, sex, birthday, description, date.toLocaleString()};
+		Object[] params = new Object[] {name, nickname, sex, birthday, description, date};
 
 		try {
-//			personModel.setId(id);
 			ps.println(sql);
 			for (int i = 0; i < params.length; i++) {
 				ps.print(params[i]+", ");
@@ -112,12 +105,11 @@ public class PersonSer {
 			personModel.setSex(sex);
 			personModel.setBirthday(birthday);
 			personModel.setDescription(description);
-			personModel.setCreate_time(date.toLocaleString());
+			personModel.setCreate_time(date.toString());
 
 			System.out.println("\n"+name+" "+nickname+" "+sex+" "+birthday+" "+description);
-			System.out.println("addPerson結束 "+date.toLocaleString());
+			System.out.println("addPerson結束 "+date);
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			ps.println(e.getMessage());
 		}
@@ -125,7 +117,6 @@ public class PersonSer {
 
 	/* 取得資料 並將資料新增至PersonModel */
 	public List<Map<String, Object>> selPerson() {
-		// TODO Auto-generated method stub
 		System.out.println("selPerson開始 "+new Date().toLocaleString());
 		System.out.println("取得ID "+personModel.getId()+" Person會員資料..");
 		Object[] params = new Object[]{personModel.getId()};
@@ -134,7 +125,7 @@ public class PersonSer {
 		StringBuilder sql = new StringBuilder("SELECT id, name, nickname, sex, birthday, description, create_time FROM tb_person WHERE ID = ?");
 		if (params != null) {
 			ps.println(sql+":"+params[0].toString());
-		}else {
+		} else {
 			ps.println(sql+":"+params.toString());
 		}
 		
@@ -207,9 +198,10 @@ public class PersonSer {
 
 	/* 修改資料 */
 	public void editPerson(String id, String name, String nickname, String sex, String birthday, String description) throws Exception{
-		Date date = new Date();
-		String iid = personModel.getId();
-		ps.println("editPerson開始 "+date.toString());
+		Date Now = new Date();
+	    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String date = sd.format(Now);
+		ps.println("editPerson開始 "+date);
 
 		String sql = "UPDATE tb_person SET "
 				+ "name = ?, nickname = ?, sex = ?, birthday = ?, description = ?, create_time = ? "
@@ -220,7 +212,7 @@ public class PersonSer {
 			jdbcTemplate.update(sql, params);
 			ps.println(sql+params);
 			selPerson();
-			ps.println("editPerson結束 "+date.toString());
+			ps.println("editPerson結束 "+date);
 		} catch (Exception e) {
 			// TODO: handle exception
 			ps.println(e.getMessage());
@@ -244,4 +236,5 @@ public class PersonSer {
 			e.printStackTrace();
 		}
 	}
+
 }

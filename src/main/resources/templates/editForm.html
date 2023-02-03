@@ -7,7 +7,7 @@
 	</head>
 	<body>
 
-		<form action="#" th:action="@{/editPerson}" th:object="${person}" method="post">
+		<form action="#" th:action="@{/SpringDemo/editPerson}" th:object="${person}" method="post">
 
 			<div align="center"><br>
 				<fieldset style="width:60%;">
@@ -71,7 +71,7 @@
     var message = /*[[${person}]]*/ 'default';
     console.log(message);
 
-    async function goPerson(){
+    function goPerson(){
     	window.location.href = "Person";
     };
 

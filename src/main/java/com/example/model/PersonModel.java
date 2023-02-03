@@ -63,5 +63,4 @@ public class PersonModel {
 		this.create_time = create_time;
 	}
 
-	
 }

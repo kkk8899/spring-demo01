@@ -8,32 +8,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.model.PersonModel;
-import com.example.service.PersonSer;
+import com.example.service.PersonService;
 
 @Controller
-public class PersonCon {
+@RequestMapping("/SpringDemo")
+public class PersonController {
 
 	@Autowired
 	PersonModel personModel;
-	
+
 	@Autowired
-	PersonSer personSer;
+	PersonService personService; 
 
 	@GetMapping("/Person")
 	/* 列出資料Api */
 	public Object getPerson(ModelMap model) {
 		// 取得基本資料
 		Map<String, Object> rs=new HashMap<String, Object>();
-		rs = personSer.getAllPerson();
-		model.addAttribute("name", "這是名字");
+		rs = personService.getAllPerson();
+		model.addAttribute("name", "測試");
 		model.addAttribute("list", rs);
 
 		return "Person";
@@ -62,7 +61,7 @@ public class PersonCon {
 			ModelMap model) {
 		try {
 			System.out.println(name+" "+nickname+" "+sex+" "+birthday+" "+description);
-			personSer.addPerson(name, nickname, sex, birthday, description);
+			personService.addPerson(name, nickname, sex, birthday, description);
 
 			model.addAttribute("person", personModel);
 //			personSer.selPerson();
@@ -85,7 +84,7 @@ public class PersonCon {
 		try {
 //			System.out.println(id);
 			personModel.setId(id);
-			personSer.selPerson();
+			personService.selPerson();
 			model.addAttribute("person", personModel);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -119,7 +118,7 @@ public class PersonCon {
 			ModelMap model) {
 		try {
 			System.out.println(name+" "+nickname+" "+sex+" "+birthday+" "+description);
-			personSer.editPerson(id, name, nickname, sex, birthday, description);
+			personService.editPerson(id, name, nickname, sex, birthday, description);
 			model.addAttribute("person", personModel);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -136,8 +135,8 @@ public class PersonCon {
 			ModelMap model) {
 		try {
 			System.out.println(new Date()+"刪除資料:"+id);
-			personSer.delPerson(id);
-			model.addAttribute("list", personSer.getAllPerson());
+			personService.delPerson(id);
+			model.addAttribute("list", personService.getAllPerson());
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
