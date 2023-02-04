@@ -17,7 +17,7 @@ import com.example.model.PersonModel;
 import com.example.service.PersonService;
 
 @Controller
-@RequestMapping("/SpringDemo")
+@RequestMapping("/Demo")
 public class PersonController {
 
 	@Autowired
@@ -41,8 +41,15 @@ public class PersonController {
 	@GetMapping("/addForm")
 	/* 新增資料頁面 */
 	public Object addForm(ModelMap model) {
-		//personModel = new PersonModel()
+		//personModel = new PersonModel();
 		/* 另一種方式 */
+		personModel.setId("");
+		personModel.setName("");
+		personModel.setNickname("");
+		personModel.setSex("");
+		personModel.setBirthday("");
+		personModel.setDescription("");
+		personModel.setCreate_time("");
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("addForm");
 		mv.addObject("person", personModel);

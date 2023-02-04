@@ -7,7 +7,7 @@
 	</head>
 	<body>
 
-		<form action="#" th:action="@{/SpringDemo/addPerson}" th:object="${person}" method="post">
+		<form action="#" th:action="@{../Demo/addPerson}" th:object="${person}" method="post">
 
 			<div align="center"><br>
 				<fieldset style="width:60%;">
@@ -51,8 +51,8 @@
 						<tr>
 							<td></td>
 							<td>
-								<input type="submit" value="儲存"/>
-								<input type="reset"  value="重置"/>
+								<input type="submit" value="儲存" />
+								<input type="reset"  value="重置" />
 								<input type="button" value=" 回上一頁 " onclick="goPerson()" />
 							</td>
 						</tr>

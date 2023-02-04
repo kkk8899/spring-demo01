@@ -6,11 +6,12 @@
 </head>
 <body>
 	<p id="p1">s</p>
-    <p>Go to <a href="SpringDemo/Person">Person</a></p>
+    <!-- <p>Go to <a href="/Person">Person</a></p> -->
+    <input type="button" value="Go to Person" onclick="goPerson()" />
 </body>
 </html>
 
-<script type="text/javascript">
+<script type="text/javascript"  th:inline="javascript">
 		let dt = new Date();
 		let yyyy = dt.getFullYear();
 		let MM = dt.getMonth()+1;
@@ -35,4 +36,10 @@
 		}
 		const dat = document.getElementById('p1');
 		dat.textContent = yyyy +'-'+ MM +'-'+ dd +' '+ hh +':'+ mi +':'+ ss;
+
+	    function goPerson(){
+	    	window.location.href=/*[[@{Demo/Person}]]*/ 'default';
+	    	//window.location.href = "Person";
+	    };
+
 </script>
