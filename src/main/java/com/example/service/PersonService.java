@@ -25,40 +25,26 @@ public class PersonService {
 
 	private PrintStream ps = new PrintStream(System.out);
 
+	//時間轉換用
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	/* 取得Person全部資料 */
 	public Map<String, Object> getAllPerson() {
 		// TODO Auto-generated method stub
-		System.out.println("getAllPerson開始 "+new Date().toLocaleString());
+		System.out.println("getAllPerson開始 " + sdf.format(new Date()));
 		System.out.println("取得Person全部會員資料..");
 		Map<String, Object> rs=new HashMap<String, Object>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM tb_person");
+		StringBuilder sql = new StringBuilder("select id, name, nickname, sex,"
+											+ " birthday, description,"
+											+ " date_format(create_time, '%Y-%m-%d %H:%m:%s') as create_time"
+											+ " from tb_person");
 		rs.put("data",jdbcTemplate.queryForList(sql.toString()));
 
 		List<Map<String, Object>> ms;
 		ms = jdbcTemplate.queryForList(sql.toString());
 		
-		System.out.println(rs);
-		System.out.println("getAllPerson結束 "+new Date().toLocaleString());
-//		System.out.println(rs.get("data"));
-//		System.out.println(ms);
-//		for (Map<String, Object> i : ms) {
-//			for (Map.Entry<String, Object> j : i.entrySet()) {
-//				System.out.printf("ms Key->%s, Value->%S ", j.getKey(), j.getValue());
-//			}
-//		}
-//		System.out.println("");
-//		ms.stream().forEach(ls->{
-//			ls.entrySet().forEach(ll->{
-//				System.out.printf("ms Key->%s, Value->%S ", ll.getKey(), ll.getValue());
-//			});
-//		});
-//		System.out.println("");
-//		for (Entry<String, Object> keys : rs.entrySet()) {
-//		   System.out.println(keys.getKey()+":"+keys.getValue());
-//		}
-//		rs.forEach((k, v)->System.out.printf("rs Key->%s, Value->%S ", k, v));
-//		System.out.println("");
-//		System.out.println("name:"+ms.toString());
+		System.out.println(rs.get("data"));
+		System.out.println("getAllPerson結束 " + sdf.format(new Date()));
 
 		return rs;
 	}
@@ -66,27 +52,30 @@ public class PersonService {
 	/* 取得單獨資料 */
 	public Map<String, Object> getOnePerson(String id) {
 		// TODO Auto-generated method stub
-		System.out.println("getPerson開始 "+new Date().toLocaleString());
+		System.out.println("getPerson開始 " + sdf.format(new Date()));
 		System.out.println("取得Person : "+id+" 會員資料..");
 		Map<String, Object> rs=new HashMap<String, Object>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM tb_person where ID = "+id);
+		StringBuilder sql = new StringBuilder("SELECT id, name, nickname, sex,"
+											+ " birthday, description,"
+											+ " date_format(create_time, '%Y-%M-%d %H:%m:%s') as create_time"
+											+ " FROM tb_person"
+											+ " WHERE id = "+id);
 		rs.put("data",jdbcTemplate.queryForList(sql.toString()));
 		
 		List<Map<String, Object>> ms;
 		ms = jdbcTemplate.queryForList(sql.toString());
 		
 		System.out.println(rs);
-		System.out.println("getPerson結束 "+new Date().toLocaleString());
+		System.out.println("getPerson結束 " + sdf.format(new Date()));
 		
 		return rs;
 	}
 
 	/* 新增資料 */
 	public void addPerson(String name, String nickname, String sex, String birthday, String description) throws Exception{
-		Date Now = new Date();
-	    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    String date = sd.format(Now);
-		ps.println("addPerson開始 "+date);
+
+	    String date = sdf.format(new Date());
+		ps.println("addPerson開始 "+ date);
 
 		String sql = "INSERT INTO tb_person ("
 					+ "name, nickname, sex, birthday, description, create_time)"
@@ -105,10 +94,10 @@ public class PersonService {
 			personModel.setSex(sex);
 			personModel.setBirthday(birthday);
 			personModel.setDescription(description);
-			personModel.setCreate_time(date.toString());
+			personModel.setCreate_time(date);
 
-			System.out.println("\n"+name+" "+nickname+" "+sex+" "+birthday+" "+description);
-			System.out.println("addPerson結束 "+date);
+			System.out.println("\n"+name+":"+nickname+":"+sex+":"+birthday+":"+description+":"+date);
+			System.out.println("addPerson結束 "+ date);
 		} catch (Exception e) {
 			e.printStackTrace();
 			ps.println(e.getMessage());
@@ -117,12 +106,14 @@ public class PersonService {
 
 	/* 取得資料 並將資料新增至PersonModel */
 	public List<Map<String, Object>> selPerson() {
-		System.out.println("selPerson開始 "+new Date().toLocaleString());
+		System.out.println("selPerson開始 " + sdf.format(new Date()));
 		System.out.println("取得ID "+personModel.getId()+" Person會員資料..");
 		Object[] params = new Object[]{personModel.getId()};
 
 		List<Map<String, Object>> rs=new ArrayList<Map<String, Object>>();
-		StringBuilder sql = new StringBuilder("SELECT id, name, nickname, sex, birthday, description, create_time FROM tb_person WHERE ID = ?");
+		StringBuilder sql = new StringBuilder("SELECT id, name, nickname, sex, "
+											+ "birthday, description, date_format(create_time, '%Y-%m-%d %H:%m:%s') as create_time "
+											+ "FROM tb_person WHERE ID = ?");
 		if (params != null) {
 			ps.println(sql+":"+params[0].toString());
 		} else {
@@ -191,17 +182,16 @@ public class PersonService {
 		}
 		System.out.println();
 		System.out.println(rs);
-		System.out.println("selPerson結束 "+new Date().toLocaleString());
+		System.out.println("selPerson結束 " + sdf.format(new Date()));
 
 		return rs;
 	}
 
 	/* 修改資料 */
 	public void editPerson(String id, String name, String nickname, String sex, String birthday, String description) throws Exception{
-		Date Now = new Date();
-	    SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    String date = sd.format(Now);
-		ps.println("editPerson開始 "+date);
+
+	    String date = sdf.format(new Date());
+		ps.println("editPerson開始 " + date);
 
 		String sql = "UPDATE tb_person SET "
 				+ "name = ?, nickname = ?, sex = ?, birthday = ?, description = ?, create_time = ? "
@@ -212,7 +202,7 @@ public class PersonService {
 			jdbcTemplate.update(sql, params);
 			ps.println(sql+params);
 			selPerson();
-			ps.println("editPerson結束 "+date);
+			ps.println("editPerson結束 " + date);
 		} catch (Exception e) {
 			// TODO: handle exception
 			ps.println(e.getMessage());
@@ -224,12 +214,12 @@ public class PersonService {
 	public void delPerson(String id) throws Exception{
 		String iid = personModel.getId();
 
-		ps.println("delPerson開始 "+new Date().toString());
+		ps.println("delPerson開始 " + sdf.format(new Date()));
 		String sql = "DELETE FROM tb_person WHERE id = " + id;
 		try {
 			jdbcTemplate.update(sql);
 			ps.println(sql);
-			ps.println("delPerson結束 "+new Date().toString());
+			ps.println("delPerson結束 " + sdf.format(new Date()));
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
